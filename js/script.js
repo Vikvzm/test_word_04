@@ -44,11 +44,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //функция переводит секунды в дни, часы, минуты, секунды
     function getTimeRemaining(endtime) {
-        const t = Date.parse(endtime) - Date.parse(new Date()),
-            days = Math.floor(t / (1000 * 60 * 60 * 24)),
-            hours = Math.floor((t / (1000 * 60 * 60) % 24)),
-            minutes = Math.floor((t / 1000 / 60) % 60),
+        const t = Date.parse(endtime) - Date.parse(new Date());
+        if (t <= 0) {
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+
+        } else {
+            days = Math.floor(t / (1000 * 60 * 60 * 24));
+            hours = Math.floor((t / (1000 * 60 * 60) % 24));
+            minutes = Math.floor((t / 1000 / 60) % 60);
             seconds = Math.floor((t / 1000) % 60);
+        }
+
         return {
             total: t,
             days: days,
@@ -66,6 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
             minutes = timer.querySelector('#minutes'),
             seconds = timer.querySelector('#seconds'),
             timeInterval = setInterval(updateClock, 1000);
+
+        updateClock();
 
         //заменяем таймер на странице
         function updateClock() {

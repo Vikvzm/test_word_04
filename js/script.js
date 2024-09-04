@@ -110,16 +110,21 @@ document.addEventListener('DOMContentLoaded', () => {
         modal = document.querySelector('.modal'),
         modeCloseBtn = document.querySelector('[data-close]');
 
+    //открывает модульное окно
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        //можно заменить верхние две строки(toggle - если нет то добавит, если есть то удалит)
+        // modal.classList.toggle('show')
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
+
     modalTrigger.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            //можно заменить верхние две строки(toggle - если нет то добавит, если есть то удалит)
-            // modal.classList.toggle('show')
-            document.body.style.overflow = 'hidden';
-        });
+        btn.addEventListener('click', openModal);
     });
-    
+
+    //закрытие модального окна
     function closeModal() {
         modal.classList.add('hide');
         modal.classList.remove('show');
@@ -141,10 +146,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //отлавливаем событие кнопки(нажатие)
-    document.addEventListener('keydown', (e) =>{
+    document.addEventListener('keydown', (e) => {
         // проверяем на код нажатой кнопки и открыто ли модальное окно для сработки клавиши esc
         if (e.code === 'Escape' && modal.classList.contains('show')) {
             closeModal()
         }
     });
+    // создаем таймер для появления модального окна
+    const modalTimerId = setTimeout(openModal, 10000);
+
+    // появления модального окна после просмотра всей страницы
+    function showModalByScroll() {
+        if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });

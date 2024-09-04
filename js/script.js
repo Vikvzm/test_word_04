@@ -103,4 +103,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+
+    // Modal блок
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modeCloseBtn = document.querySelector('[data-close]');
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            //можно заменить верхние две строки(toggle - если нет то добавит, если есть то удалит)
+            // modal.classList.toggle('show')
+            document.body.style.overflow = 'hidden';
+        });
+    });
+    
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        //можно заменить верхние две строки(toggle - если нет то добавит, если есть то удалит)
+        //modal.classList.toggle('show')
+        document.body.style.overflow = '';
+    }
+
+    modeCloseBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            // modal.classList.add('hide');
+            // modal.classList.remove('show');
+            // document.body.style.overflow = '';
+            //заменяем функцией
+            closeModal()
+        }
+    });
+
+    //отлавливаем событие кнопки(нажатие)
+    document.addEventListener('keydown', (e) =>{
+        // проверяем на код нажатой кнопки и открыто ли модальное окно для сработки клавиши esc
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal()
+        }
+    });
 });

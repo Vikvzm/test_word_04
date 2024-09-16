@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         render() {
             const element = document.createElement('div');
             //назначаем элемент по умолчании
-            if (this.classes.length ===0) {
+            if (this.classes.length === 0) {
                 this.element = 'menu__item';
                 element.classList.add(this.element);
             } else {
@@ -208,7 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.parent.append(element);
         }
     }
-    new  MenuCard(
+
+    new MenuCard(
         "img/tabs/vegy.jpg",
         "vegy",
         'Меню "Фитнес"',
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu .container'
     ).render();
 
-    new  MenuCard(
+    new MenuCard(
         "img/tabs/elite.jpg",
         "elite",
         'Меню “Премиум”',
@@ -226,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu .container'
     ).render();
 
-    new  MenuCard(
+    new MenuCard(
         "img/tabs/post.jpg",
         "post",
         'Меню "Постное"',
@@ -234,5 +235,65 @@ document.addEventListener('DOMContentLoaded', () => {
         43,
         '.menu .container'
     ).render();
+
+    // forma
+
+    const forms = document.querySelectorAll('form');
+    // сообщения для вывода в окно
+    const message = {
+        loading: 'Загрузка',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло е так...'
+    };
+    //итерируем forms и производим действия при помощи функции postData
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMassge = document.createElement('div');
+            statusMassge.classList.add('status');
+            statusMassge.textContent = message.loading;
+            form.append(statusMassge);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            // // блок для обычной формы.
+            // //request.setRequestHeader('Content-type', 'multipart/form-data'); //название давать не надо при обычном формате
+            //
+            // const formData = new FormData(form);
+            // request.send(formData);
+
+            //блок для формата json, нужно устанавливать заголовок
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMassge.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMassge.remove();
+                    }, 2000);
+                } else {
+                    statusMassge.textContent = message.loading
+                }
+            })
+        });
+    }
+
 
 });

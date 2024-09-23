@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal');
-        // modeCloseBtn = document.querySelector('[data-close]'); //блокируем при добавления нового модал окна
+    // modeCloseBtn = document.querySelector('[data-close]'); //блокируем при добавления нового модал окна
 
     //открывает модульное окно
     function openModal() {
@@ -137,13 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //редактируем добовляя проверку на клик крестик event.target.getAttribute('data-close') == ''
     modal.addEventListener('click', (event) => {
-        if (event.target === modal || event.target.getAttribute('data-close') == '' ) {
-        // if (event.target === modal) {
-                // modal.classList.add('hide');
-                // modal.classList.remove('show');
-                // document.body.style.overflow = '';
-                //заменяем функцией
-                closeModal()
+        if (event.target === modal || event.target.getAttribute('data-close') == '') {
+            // if (event.target === modal) {
+            // modal.classList.add('hide');
+            // modal.classList.remove('show');
+            // document.body.style.overflow = '';
+            //заменяем функцией
+            closeModal()
 
         }
     });
@@ -274,8 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
             //заменяем append
             form.insertAdjacentElement('afterend', statusMassge);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
+            //редактируем при помощи промисов
+            // const request = new XMLHttpRequest();
+            // request.open('POST', 'server.php');
 
             // // блок для обычной формы.
             // //request.setRequestHeader('Content-type', 'multipart/form-data'); //название давать не надо при обычном формате
@@ -284,7 +285,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // request.send(formData);
 
             //блок для формата json, нужно устанавливать заголовок
-            request.setRequestHeader('Content-type', 'application/json');
+            // request.setRequestHeader('Content-type', 'application/json');
+
+
             const formData = new FormData(form);
 
             const object = {};
@@ -292,8 +295,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 object[key] = value;
             });
 
-            const json = JSON.stringify(object);
-            request.send(json);
+
+            //заменяем на блок feach
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+                .then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    form.reset();
+                    statusMassge.remove();
+                })
+                .catch(() => {
+                    showThanksModal(message.failure);
+                })
+                .finally(() => {
+                    form.reset();
+                });
+            // const json = JSON.stringify(object); //перенесли выше во fetch
+            // request.send(json);
 
             //редактируем вывод сообщения в связи с добавлением нового модального окна
             // request.addEventListener('load', () => {
@@ -307,16 +332,16 @@ document.addEventListener('DOMContentLoaded', () => {
             //     } else {
             //         statusMassge.textContent = message.loading
             //     }
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    statusMassge.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
-            })
+            // request.addEventListener('load', () => {
+            //     if (request.status === 200) {
+            //         console.log(request.response);
+            //         showThanksModal(message.success);
+            //         form.reset();
+            //         statusMassge.remove();
+            //     } else {
+            //         showThanksModal(message.failure);
+            //     }
+            // })
         });
     }
 
@@ -348,10 +373,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
+
     //настраиваем спинер для загрузки
 
+    //Настройка promise, fetch API тест
+    // URL запрос
+    // fetch('https://jsonplaceholder.typicode.com/todos/1')
+    //     .then(response => response.json())
+    //     .then(json => console.log(json));
 
-
+    //делаем POST запрос который обрабатываеться на бэкенде test
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: "POST",
+    //     body: JSON.stringify({name: "Alex"}),
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // })
+    //     .then(response => response.json())
+    //     .then(json => console.log(json));
 
 
 });

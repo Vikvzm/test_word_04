@@ -1,7 +1,10 @@
-function forms() {
+import {openModal, closeModal} from './modal';
+import {postData} from '../services/services';
+
+function forms(formSelector, modalTimerId) {
     // forma
 
-    const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll(formSelector);
     // сообщения для вывода в окно
     const message = {
         // loading: 'Загрузка',
@@ -15,16 +18,6 @@ function forms() {
         bindPostData(item);
     });
 
-    const  postData = async (url, data) => {
-        const  res = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: data
-        });
-        return await res.json();
-    };
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -131,7 +124,7 @@ function forms() {
 
         //скрываем модальное окно с запросом
         prevModalDialog.classList.add('hide');
-        openModal();
+        openModal('.modal', modalTimerId);
 
         //создаем блок обертка для модального окна
         const thankModal = document.createElement('div');
@@ -149,7 +142,7 @@ function forms() {
             thankModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();
+            closeModal('.modal');
         }, 4000);
     }
 
@@ -173,10 +166,13 @@ function forms() {
     //     .then(response => response.json())
     //     .then(json => console.log(json));
 
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res => console.log(res));
+
+
+    //??? непонятно
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(res => console.log(res));
 
 }
 
-module.exports = forms;
+export default forms;

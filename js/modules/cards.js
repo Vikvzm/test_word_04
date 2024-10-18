@@ -1,3 +1,5 @@
+import {getResource} from '../services/services'
+
 function cards() {
     // Создаем карточки при помощи класса
     class MenuCard {
@@ -42,16 +44,24 @@ function cards() {
             this.parent.append(element);
         }
     }
+    //вывод карточек через библиотеку axios вместо getResource
+    axios.get('http://localhost:3000/menu')
+        .then(data => {
+            data.data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+            });
+        });
+
     //создаем функцию для размещения карточки с сервера
 
-
-    const getResource = async (url) => {
-        const rec = await fetch(url);
-        if (!rec.ok) {
-            throw new Error(`Could not featch ${url}, status: ${res.status}`);
-        }
-        return await rec.json();
-    };
+    //
+    // const getResource = async (url) => {
+    //     const rec = await fetch(url);
+    //     if (!rec.ok) {
+    //         throw new Error(`Could not featch ${url}, status: ${res.status}`);
+    //     }
+    //     return await rec.json();
+    // };
 
     // getResource('http://localhost:3000/menu')
     //     .then(data => {
@@ -60,13 +70,7 @@ function cards() {
     //         });
     //     });
 
-    //вывод карточек через библиотеку axios вместо getResource
-    axios.get('http://localhost:3000/menu')
-        .then(data => {
-            data.data.forEach(({img, altimg, title, descr, price}) => {
-                new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-            });
-        });
+
 
 
 
@@ -99,4 +103,4 @@ function cards() {
 
 }
 
-module.exports = cards;
+export default cards;
